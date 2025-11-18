@@ -1,0 +1,88 @@
+.env
+
+# Byte‑code compilado
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribuição / Pacotes
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+*.manifest
+*.spec
+
+# Instalação de dependências
+pip-wheel-metadata/
+*.pip
+
+# Ambientes virtuais
+venv/
+ENV/
+env/
+.venv/
+.ENV/
+.env/
+.virtualenv/
+__pypackages__/
+
+# Ferramentas de teste
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+pytestdebug.log
+
+# IDEs / Editores
+# VS Code
+.vscode/
+# PyCharm
+.idea/
+*.iml
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos de log
+*.log
+logs/
+log/
+
+# Configurações locais que não devem ser versionadas
+*.env
+.env.*
+*.local
+*.sqlite3
+db.sqlite3
+
+# Dados temporários / caches
+*.tmp
+tmp/
+temp/
+*.bak
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Documentação gerada
+docs/_build/
+site/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Outros artefatos
+*.class
+*.jar
+*.war
+*.ear
+
