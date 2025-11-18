@@ -1,0 +1,3 @@
+﻿psycopg2-binary
+python-dotenv
+google-generativeai
