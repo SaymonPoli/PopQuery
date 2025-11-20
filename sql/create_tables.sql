@@ -55,9 +55,11 @@ CREATE TABLE Filme (
     sinopse TEXT,
     faixa_etaria VARCHAR(10),
     nota_imdb FLOAT,
+    data_inicio DATE NOT NULL,
+    data_fim DATE NOT NULL,
     fk_id_genero INT NOT NULL,
     fk_id_diretor INT,
-    
+
     FOREIGN KEY (fk_id_genero) REFERENCES Genero(id_genero) ON DELETE RESTRICT,
     FOREIGN KEY (fk_id_diretor) REFERENCES Diretor(id_diretor) ON DELETE SET NULL
 );
@@ -135,3 +137,18 @@ CREATE TABLE assento_ingresso (
     FOREIGN KEY (fk_id_assento) REFERENCES Assento(id_assento) ON DELETE CASCADE,
     FOREIGN KEY (fk_id_ingresso) REFERENCES Ingresso(id_ingresso) ON DELETE CASCADE
 );
+
+CREATE OR REPLACE FUNCTION validar_periodo_sessao()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.data < (SELECT data_inicio FROM Filme WHERE id_filme = NEW.fk_id_filme)
+       OR NEW.data > (SELECT data_fim FROM Filme WHERE id_filme = NEW.fk_id_filme) THEN
+        RAISE EXCEPTION 'A sessão está fora do período de exibição do filme.';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tg_validar_periodo_sessao
+BEFORE INSERT OR UPDATE ON Sessao
+FOR EACH ROW EXECUTE FUNCTION validar_periodo_sessao();

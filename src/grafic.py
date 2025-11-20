@@ -11,7 +11,7 @@ def gerar_grafico_relatorio_1(df):
     Gráfico: Top 5 Bilheteria
     df deve conter colunas: ['titulo_filme', 'faturamento_total']
     """
-    plt.figure()
+    plt.figure(figsize=(25, 25))
     plt.bar(df['titulo_filme'], df['faturamento_total'])
     plt.title('Top 5 Bilheteria')
     plt.xlabel('Filme')
@@ -38,7 +38,7 @@ def gerar_grafico_relatorio_2(df):
     df['dia_da_semana'] = pd.Categorical(df['dia_da_semana'], categories=ordem_dias, ordered=True)
     df = df.sort_values('dia_da_semana')
 
-    plt.figure()
+    plt.figure(figsize=(25, 25))
 
     plt.bar(df['dia_da_semana'], df['faturamento_total'])
 
@@ -61,7 +61,7 @@ def gerar_grafico_relatorio_3(df):
     df deve conter colunas: ['titulo_filme', 'nota_imdb', 'total_ingressos']
     """
 
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(25, 25))
 
     # Cores diferentes para cada filme
     cores = plt.cm.tab20(range(len(df)))
