@@ -1,7 +1,13 @@
 # -----------------------------------------------------------------
-# FUNÇÕES DE RELATÓRIO (Item c)
-# (As 3 consultas de sumarização - SEM GRÁFICOS)
+# RELATÓRIOS (Item c)
+# Agora integrados com geração automática de gráficos
 # -----------------------------------------------------------------
+
+from src.grafic import (
+    processar_relatorio_1,
+    processar_relatorio_2,
+    processar_relatorio_3
+)
 
 def run_report_1(con):
     print("\n--- [Opção 6] Relatório: Top 5 Bilheteria ---")
@@ -20,19 +26,19 @@ def run_report_1(con):
         """
         with con.cursor() as cur:
             cur.execute(query_sql)
-            
 
-            col_names = [desc[0] for desc in cur.description]
-            print("\n--- Resultado (Tabela) ---")
-            print(f"{col_names[0]:<50} | {col_names[1]}") # Formata o cabeçalho
-            print("-" * 70)
-            
-            
             results = cur.fetchall()
+
+            print("\n--- Resultado (Tabela) ---")
+            print(f"{'titulo_filme':<50} | faturamento_total")
+            print("-" * 70)
+
             for row in results:
-                print(f"{str(row[0]):<50} | R$ {row[1]:.2f}")
-        
-        print("\n[AVISO] Para o Item (c), copie a tabela acima e cole no Excel para gerar o gráfico.")
+                print(f"{row[0]:<50} | R$ {row[1]:.2f}")
+
+        # 🔹 gera gráfico automaticamente
+        processar_relatorio_1(results)
+        print("\n[OK] Gráfico gerado: grafico_top5_bilheteria.png")
 
     except Exception as e:
         print(f"[ERRO] Falha ao gerar relatório: {e}")
@@ -42,11 +48,8 @@ def run_report_1(con):
 def run_report_2(con):
     print("\n--- [Opção 7] Relatório: Vendas por Dia da Semana ---")
     try:
-       
         query_sql = """
             SELECT
-                EXTRACT(DOW FROM ci.data_emissao) AS dia_id,
-                
                 CASE EXTRACT(DOW FROM ci.data_emissao)
                     WHEN 0 THEN 'Domingo'
                     WHEN 1 THEN 'Segunda-feira'
@@ -56,39 +59,37 @@ def run_report_2(con):
                     WHEN 5 THEN 'Sexta-feira'
                     WHEN 6 THEN 'Sábado'
                 END AS dia_da_semana,
-                
                 SUM(ci.valor_total) AS faturamento_total
             FROM Cliente_Ingresso ci
             JOIN Ingresso i ON ci.fk_id_ingresso = i.id_ingresso
             JOIN Sessao s ON i.fk_id_sessao = s.id_sessao 
-            GROUP BY dia_id, dia_da_semana # Agrupa pelo número e pelo nome traduzido
-            ORDER BY dia_id; # Ordena pelo número (Domingo primeiro)
+            GROUP BY dia_da_semana
+            ORDER BY SUM(ci.valor_total) DESC;
         """
-       
-        
+
         with con.cursor() as cur:
             cur.execute(query_sql)
-            
-           
-            col_names = [desc[0] for desc in cur.description[1:]] 
-            print("\n--- Resultado (Tabela) ---")
-            print(f"{col_names[0]:<20} | {col_names[1]}")
-            print("-" * 40)
-            
-            
+
             results = cur.fetchall()
+
+            print("\n--- Resultado (Tabela) ---")
+            print(f"{'Dia da Semana':<20} | Faturamento")
+            print("-" * 40)
+
             for row in results:
-              
-                print(f"{str(row[1]):<20} | R$ {row[2]:.2f}")
-        
-        print("\n[AVISO] Para o Item (c), copie a tabela acima e cole no Excel para gerar o gráfico.")
+                print(f"{row[0]:<20} | R$ {row[1]:.2f}")
+
+        # 🔹 gera gráfico automaticamente
+        processar_relatorio_2(results)
+        print("\n[OK] Gráfico gerado: grafico_faturamento_semana.png")
 
     except Exception as e:
         print(f"[ERRO] Falha ao gerar relatório: {e}")
         con.rollback()
 
+
 def run_report_3(con):
-    print("\n--- [Opção 8] Relatório: Relação IMDb vs. Vendas ---")
+    print("\n--- [Opção 8] Relatório: IMDb vs Ingressos Vendidos ---")
     try:
         query_sql = """
             SELECT
@@ -102,19 +103,22 @@ def run_report_3(con):
             GROUP BY f.id_filme, f.nome, f.nota_imdb
             ORDER BY total_ingressos_vendidos DESC;
         """
+
         with con.cursor() as cur:
             cur.execute(query_sql)
-            
-            col_names = [desc[0] for desc in cur.description]
-            print("\n--- Resultado (Tabela) ---")
-            print(f"{col_names[0]:<50} | {col_names[1]:<10} | {col_names[2]}")
-            print("-" * 80)
-            
+
             results = cur.fetchall()
+
+            print("\n--- Resultado (Tabela) ---")
+            print(f"{'Filme':<50} | {'IMDb':<5} | Ingressos")
+            print("-" * 80)
+
             for row in results:
-                print(f"{str(row[0]):<50} | {str(row[1]):<10} | {row[2]}")
-        
-        print("\n[AVISO] Para o Item (c), copie a tabela acima e cole no Excel para gerar o gráfico.")
+                print(f"{row[0]:<50} | {row[1]:<5} | {row[2]}")
+
+        # 🔹 gera gráfico automaticamente
+        processar_relatorio_3(results)
+        print("\n[OK] Gráfico gerado: grafico_imdb_vs_vendas.png")
 
     except Exception as e:
         print(f"[ERRO] Falha ao gerar relatório: {e}")

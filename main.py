@@ -12,6 +12,7 @@ from src.crud import crud_menu
 from src.db_admin import create_all_tables, drop_all_tables, populate_all_tables
 from src.reports import run_report_1, run_report_2, run_report_3
 from src.ai import run_ia_recommendation
+from src.grafic import processar_relatorio_1, processar_relatorio_2, processar_relatorio_3
 
 # Carrega as variáveis do arquivo .env para a memória
 load_dotenv() 
