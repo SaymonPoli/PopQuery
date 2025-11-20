@@ -36,7 +36,6 @@ def run_report_1(con):
             for row in results:
                 print(f"{row[0]:<50} | R$ {row[1]:.2f}")
 
-        # 🔹 gera gráfico automaticamente
         processar_relatorio_1(results)
         print("\n[OK] Gráfico gerado: grafico_top5_bilheteria.png")
 
@@ -79,7 +78,6 @@ def run_report_2(con):
             for row in results:
                 print(f"{row[0]:<20} | R$ {row[1]:.2f}")
 
-        # 🔹 gera gráfico automaticamente
         processar_relatorio_2(results)
         print("\n[OK] Gráfico gerado: grafico_faturamento_semana.png")
 
@@ -116,7 +114,6 @@ def run_report_3(con):
             for row in results:
                 print(f"{row[0]:<50} | {row[1]:<5} | {row[2]}")
 
-        # 🔹 gera gráfico automaticamente
         processar_relatorio_3(results)
         print("\n[OK] Gráfico gerado: grafico_imdb_vs_vendas.png")
 

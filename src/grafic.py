@@ -27,14 +27,32 @@ def gerar_grafico_relatorio_2(df):
     Gráfico: Faturamento por Dia da Semana
     df deve conter colunas: ['dia_da_semana', 'faturamento_total']
     """
+
+    # Ordem fixa dos dias
+    ordem_dias = [
+        "Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira",
+        "Quinta-feira", "Sexta-feira", "Sábado"
+    ]
+
+    # Reordena o df pela ordem correta
+    df['dia_da_semana'] = pd.Categorical(df['dia_da_semana'], categories=ordem_dias, ordered=True)
+    df = df.sort_values('dia_da_semana')
+
     plt.figure()
+
     plt.bar(df['dia_da_semana'], df['faturamento_total'])
+
     plt.title('Faturamento por Dia da Semana')
     plt.xlabel('Dia da Semana')
     plt.ylabel('Faturamento (R$)')
+
+    plt.xticks(rotation=20, ha='right')
+
     plt.tight_layout()
+
     plt.savefig('grafico_faturamento_semana.png')
     plt.close()
+
 
 
 def gerar_grafico_relatorio_3(df):
