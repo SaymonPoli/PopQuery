@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import pandas as pd
 
 # ---------------------------------------------
@@ -6,12 +7,20 @@ import pandas as pd
 # Geração automática de gráficos a partir das 3 consultas
 # ---------------------------------------------
 
+plt.rcParams['font.size'] = 12        # fonte base
+plt.rcParams['axes.titlesize'] = 18   # título
+plt.rcParams['axes.labelsize'] = 14   # rótulos dos eixos
+plt.rcParams['xtick.labelsize'] = 12
+plt.rcParams['ytick.labelsize'] = 12
+plt.rcParams['legend.fontsize'] = 10
+
+
 def gerar_grafico_relatorio_1(df):
     """
     Gráfico: Top 5 Bilheteria
     df deve conter colunas: ['titulo_filme', 'faturamento_total']
     """
-    plt.figure(figsize=(25, 25))
+    plt.figure(figsize=(10, 6))
     plt.bar(df['titulo_filme'], df['faturamento_total'])
     plt.title('Top 5 Bilheteria')
     plt.xlabel('Filme')
@@ -38,7 +47,7 @@ def gerar_grafico_relatorio_2(df):
     df['dia_da_semana'] = pd.Categorical(df['dia_da_semana'], categories=ordem_dias, ordered=True)
     df = df.sort_values('dia_da_semana')
 
-    plt.figure(figsize=(25, 25))
+    plt.figure(figsize=(10, 6))
 
     plt.bar(df['dia_da_semana'], df['faturamento_total'])
 
@@ -53,37 +62,30 @@ def gerar_grafico_relatorio_2(df):
     plt.savefig('grafico_faturamento_semana.png')
     plt.close()
 
-
-
 def gerar_grafico_relatorio_3(df):
-    """
-    Relação IMDb vs. Total de Ingressos Vendidos
-    df deve conter colunas: ['titulo_filme', 'nota_imdb', 'total_ingressos']
-    """
+    plt.figure(figsize=(16, 10))  # Tamanho maior para área da legenda
 
-    plt.figure(figsize=(25, 25))
+    gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1])  # Gráfico em cima, legenda embaixo
+    ax = plt.subplot(gs[0])
 
-    # Cores diferentes para cada filme
-    cores = plt.cm.tab20(range(len(df)))
+    num_filmes = len(df)
+    cores = plt.cm.get_cmap('nipy_spectral', num_filmes)(range(num_filmes))  # Paleta de alto contraste
 
-    # Scatter plot
-    plt.scatter(df['nota_imdb'], df['total_ingressos'], c=cores)
+    ax.scatter(df['nota_imdb'], df['total_ingressos'], c=cores)
 
-    # --- Formatação dos eixos ---
-    plt.ticklabel_format(style='plain', useOffset=False)       # remove offset estranho
-    plt.gca().xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))  # IMDb com precisão
-    plt.gca().yaxis.set_major_formatter(plt.FormatStrFormatter('%d'))    # ingressos inteiros
+    ax.ticklabel_format(style='plain', useOffset=False)
+    ax.xaxis.set_major_formatter(plt.FormatStrFormatter('%.2f'))
+    ax.yaxis.set_major_formatter(plt.FormatStrFormatter('%d'))
+    ax.set_title('IMDb vs. Ingressos Vendidos')
+    ax.set_xlabel('Nota IMDb')
+    ax.set_ylabel('Ingressos Vendidos')
 
-    plt.title('IMDb vs. Ingressos Vendidos')
-    plt.xlabel('Nota IMDb (com precisão)')
-    plt.ylabel('Ingressos Vendidos (inteiro)')
-
-    # --- Legenda com cores ---
     legend_labels = df['titulo_filme'].tolist()
-    for i, label in enumerate(legend_labels):
-        plt.scatter([], [], color=cores[i], label=label)
+    handles = [plt.Line2D([], [], marker="o", color=cores[i], linestyle='', label=label) for i, label in enumerate(legend_labels)]
 
-    plt.legend(title="Filmes", bbox_to_anchor=(1.05, 1), loc='upper left')
+    ax_legenda = plt.subplot(gs[1])
+    ax_legenda.axis("off")
+    ax_legenda.legend(handles=handles, title="Filmes", loc="center", ncol=5, fontsize=10, title_fontsize=12)
 
     plt.tight_layout()
     plt.savefig('grafico_imdb_vs_vendas.png')
