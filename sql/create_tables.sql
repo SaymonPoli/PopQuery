@@ -45,7 +45,7 @@ CREATE TABLE Assento (
     coluna VARCHAR(5) NOT NULL,
     vip BOOLEAN DEFAULT FALSE,
     fk_numero_sala INT NOT NULL,
-    
+
     FOREIGN KEY (fk_numero_sala) REFERENCES Sala(numero_sala) ON DELETE CASCADE
 );
 
@@ -72,10 +72,10 @@ CREATE TABLE Sessao (
     id_sessao SERIAL PRIMARY KEY,
     horario TIME NOT NULL,
     data DATE NOT NULL,
-    eh_3d BOOLEAN DEFAULT FALSE, 
+    filme_3d BOOLEAN DEFAULT FALSE,
     fk_numero_sala INT NOT NULL,
     fk_id_filme INT NOT NULL,
-    
+
     FOREIGN KEY (fk_numero_sala) REFERENCES Sala(numero_sala) ON DELETE RESTRICT,
     FOREIGN KEY (fk_id_filme) REFERENCES Filme(id_filme) ON DELETE CASCADE
 );
@@ -85,7 +85,7 @@ CREATE TABLE Ingresso (
     valor DECIMAL(10, 2) NOT NULL,
     meia_entrada BOOLEAN DEFAULT FALSE,
     fk_id_sessao INT NOT NULL,
-    
+
     FOREIGN KEY (fk_id_sessao) REFERENCES Sessao(id_sessao) ON DELETE CASCADE
 );
 
@@ -96,11 +96,11 @@ CREATE TABLE Ingresso (
 CREATE TABLE Venda (
     id_venda SERIAL PRIMARY KEY,
     data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    valor DECIMAL(10, 2) NOT NULL, 
-    fk_id_funcionario INT, 
-    fk_id_cliente INT, 
-    fk_id_item INT NOT NULL, 
-    
+    valor DECIMAL(10, 2) NOT NULL,
+    fk_id_funcionario INT,
+    fk_id_cliente INT,
+    fk_id_item INT NOT NULL,
+
     FOREIGN KEY (fk_id_funcionario) REFERENCES Funcionario(id_funcionario) ON DELETE SET NULL,
     FOREIGN KEY (fk_id_cliente) REFERENCES Cliente(id_cliente) ON DELETE SET NULL,
     FOREIGN KEY (fk_id_item) REFERENCES Bomboniere(id_item) ON DELETE RESTRICT
@@ -109,9 +109,9 @@ CREATE TABLE Venda (
 CREATE TABLE elenco (
     fk_id_filme INT NOT NULL,
     fk_id_ator INT NOT NULL,
-    
+
     PRIMARY KEY (fk_id_filme, fk_id_ator),
-    
+
     FOREIGN KEY (fk_id_filme) REFERENCES Filme(id_filme) ON DELETE CASCADE,
     FOREIGN KEY (fk_id_ator) REFERENCES Ator(id_ator) ON DELETE CASCADE
 );
@@ -122,8 +122,8 @@ CREATE TABLE Cliente_Ingresso (
     quantidade INT NOT NULL CHECK (quantidade > 0),
     valor_total DECIMAL(10, 2) NOT NULL,
     data_emissao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    id_nota VARCHAR(255), 
-    
+    id_nota VARCHAR(255),
+
     PRIMARY KEY (fk_id_cliente, fk_id_ingresso),
     FOREIGN KEY (fk_id_cliente) REFERENCES Cliente(id_cliente) ON DELETE CASCADE,
     FOREIGN KEY (fk_id_ingresso) REFERENCES Ingresso(id_ingresso) ON DELETE CASCADE
@@ -132,7 +132,7 @@ CREATE TABLE Cliente_Ingresso (
 CREATE TABLE assento_ingresso (
     fk_id_assento INT NOT NULL,
     fk_id_ingresso INT NOT NULL,
-    
+
     PRIMARY KEY (fk_id_assento, fk_id_ingresso),
     FOREIGN KEY (fk_id_assento) REFERENCES Assento(id_assento) ON DELETE CASCADE,
     FOREIGN KEY (fk_id_ingresso) REFERENCES Ingresso(id_ingresso) ON DELETE CASCADE
