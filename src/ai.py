@@ -12,18 +12,17 @@ def run_ia_recommendation(con):
     """
     print("\n--- [Opção 9] Recomendação Personalizada (IA) ---")
     try:
-        id_cliente = int(input("Para qual ID de cliente você quer a recomendação?: "))
+        contato_email = input("Para qual cliente (e-mail) você quer a recomendação?: ")
         
         with con.cursor() as cur:
-           
-            
-            # Query A: Buscar o nome do cliente
-            cur.execute("SELECT nome FROM Cliente WHERE id_cliente = %s", (id_cliente,))
-            nome_cliente_result = cur.fetchone()
-            if not nome_cliente_result:
-                print(f"[ERRO] Cliente com ID {id_cliente} não encontrado.")
+            # Query A: Buscar o ID e nome do cliente usando o e-mail
+            cur.execute("SELECT id_cliente, nome FROM Cliente WHERE contato = %s", (contato_email,))
+            cliente_result = cur.fetchone()
+            if not cliente_result:
+                print(f"[ERRO] Cliente com e-mail '{contato_email}' não encontrado.")
                 return
-            nome_cliente = nome_cliente_result[0]
+            
+            id_cliente, nome_cliente = cliente_result
 
             # Query B: Buscar os 3 gêneros favoritos do cliente (baseado no histórico)
             query_gostos = """
@@ -81,6 +80,7 @@ def run_ia_recommendation(con):
         Tarefa: Escreva uma saudação e uma recomendação de 1 ou 2 filmes em cartaz 
         que se encaixem perfeitamente nos gêneros favoritos do cliente.
         Justifique o porquê da recomendação.
+        Você roda em um terminal então evite de usar formatação markdown prefira formatação seguindo apps GUI
         """
 
         response = model.generate_content(prompt_para_ia)
